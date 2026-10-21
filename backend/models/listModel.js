@@ -2,13 +2,17 @@ import mongoose from "mongoose";
 
 const listSchema = new mongoose.Schema(
   {
+    ownerId: {
+      type: String,
+      required: true,
+      index: true,
+    },
     name: {
       type: String,
       required: true,
     },
     items: [
       {
-        _id: false,
         text: {
           type: String,
           required: true,
