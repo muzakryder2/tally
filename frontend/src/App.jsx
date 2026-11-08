@@ -426,269 +426,293 @@ export const App = () => {
 
         <div className="grid min-h-[calc(100vh-6.25rem)] md:grid-cols-[270px_1fr] lg:grid-cols-[310px_1fr]">
           <aside className="border-b border-black/[0.07] bg-[#f6f4ee] px-4 py-5 md:border-r md:border-b-0 md:px-5 md:py-8">
-            <div className="mb-4 flex items-center justify-between px-2">
-              <p className="text-[11px] font-semibold tracking-[0.14em] text-[#87847b] uppercase">
-                Your checklists
-              </p>
-              <span className="rounded-full bg-black/5.5 px-2 py-0.5 text-[11px] font-medium text-[#77756d]">
-                {lists.length}
-              </span>
-            </div>
+            <Show when="signed-in">
+              <div className="mb-4 flex items-center justify-between px-2">
+                <p className="text-[11px] font-semibold tracking-[0.14em] text-[#87847b] uppercase">
+                  Your checklists
+                </p>
+                <span className="rounded-full bg-black/5.5 px-2 py-0.5 text-[11px] font-medium text-[#77756d]">
+                  {lists.length}
+                </span>
+              </div>
 
-            <nav
-              aria-label="Checklists"
-              className="flex gap-2 overflow-x-auto pb-2 md:block md:space-y-1 md:overflow-visible md:pb-0"
-            >
-              {lists.map((list) => {
-                const done = list.items.filter((item) => item.checked).length;
-                return (
-                  <button
-                    key={list._id}
-                    type="button"
-                    onClick={() => {
-                      setSelectedId(list._id);
-                      localStorage.setItem("selectedId", list._id);
-                    }}
-                    className={`group flex min-w-52.5 items-center gap-3 rounded-xl px-3 py-3 text-left transition md:w-full md:min-w-0 ${
-                      list._id === selectedId
-                        ? "bg-white shadow-[0_4px_18px_rgba(50,48,40,0.07)] ring-1 ring-black/4"
-                        : "hover:bg-black/2.5"
-                    }`}
-                  >
-                    <span
-                      className={`flex size-8 shrink-0 items-center justify-center rounded-lg ${
+              <nav
+                aria-label="Checklists"
+                className="flex gap-2 overflow-x-auto pb-2 md:block md:space-y-1 md:overflow-visible md:pb-0"
+              >
+                {lists.map((list) => {
+                  const done = list.items.filter((item) => item.checked).length;
+                  return (
+                    <button
+                      key={list._id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedId(list._id);
+                        localStorage.setItem("selectedId", list._id);
+                      }}
+                      className={`group flex min-w-52.5 items-center gap-3 rounded-xl px-3 py-3 text-left transition md:w-full md:min-w-0 ${
                         list._id === selectedId
-                          ? "bg-[#dfeae3] text-[#2f5d50]"
-                          : "bg-black/4.5 text-[#77756d]"
+                          ? "bg-white shadow-[0_4px_18px_rgba(50,48,40,0.07)] ring-1 ring-black/4"
+                          : "hover:bg-black/2.5"
                       }`}
                     >
-                      <span className="size-4.25">
-                        <ListIcon />
+                      <span
+                        className={`flex size-8 shrink-0 items-center justify-center rounded-lg ${
+                          list._id === selectedId
+                            ? "bg-[#dfeae3] text-[#2f5d50]"
+                            : "bg-black/4.5 text-[#77756d]"
+                        }`}
+                      >
+                        <span className="size-4.25">
+                          <ListIcon />
+                        </span>
                       </span>
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate text-[13px] font-medium">
-                        {list.name}
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-[13px] font-medium">
+                          {list.name}
+                        </span>
+                        <span className="mt-0.5 block text-[11px] text-[#918f87]">
+                          {done} of {list.items.length} done
+                        </span>
                       </span>
-                      <span className="mt-0.5 block text-[11px] text-[#918f87]">
-                        {done} of {list.items.length} done
-                      </span>
-                    </span>
-                  </button>
-                );
-              })}
-            </nav>
+                    </button>
+                  );
+                })}
+              </nav>
 
-            {isAddingList ? (
-              <form onSubmit={addList} className="mt-3 rounded-xl bg-white p-3">
-                <input
-                  autoFocus
-                  value={newList}
-                  onChange={(event) => setNewList(event.target.value)}
-                  placeholder="List name"
-                  aria-label="New list name"
-                  className="w-full border-b border-black/10 bg-transparent px-1 py-2 text-[13px] outline-none placeholder:text-[#aaa79d] focus:border-[#2f5d50]"
-                />
-                <div className="mt-3 flex gap-2">
-                  <button className="rounded-lg bg-[#2f5d50] px-3 py-1.5 text-[11px] font-semibold text-white">
-                    Create
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsAddingList(false);
-                      setNewList("");
-                    }}
-                    className="px-2 py-1.5 text-[11px] font-medium text-[#77756d]"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </form>
-            ) : (
-              <button
-                type="button"
-                onClick={() => setIsAddingList(true)}
-                className="mt-3 flex w-full items-center gap-2 rounded-xl border border-dashed border-black/13 px-4 py-3 text-[12px] font-medium text-[#6d6b63] transition hover:border-[#2f5d50]/40 hover:bg-white hover:text-[#2f5d50]"
-              >
-                <span className="size-4">
-                  <PlusIcon />
-                </span>
-                New checklist
-              </button>
-            )}
+              {isAddingList ? (
+                <form
+                  onSubmit={addList}
+                  className="mt-3 rounded-xl bg-white p-3"
+                >
+                  <input
+                    autoFocus
+                    value={newList}
+                    onChange={(event) => setNewList(event.target.value)}
+                    placeholder="List name"
+                    aria-label="New list name"
+                    className="w-full border-b border-black/10 bg-transparent px-1 py-2 text-[13px] outline-none placeholder:text-[#aaa79d] focus:border-[#2f5d50]"
+                  />
+                  <div className="mt-3 flex gap-2">
+                    <button className="rounded-lg bg-[#2f5d50] px-3 py-1.5 text-[11px] font-semibold text-white">
+                      Create
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsAddingList(false);
+                        setNewList("");
+                      }}
+                      className="px-2 py-1.5 text-[11px] font-medium text-[#77756d]"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setIsAddingList(true)}
+                  className="mt-3 flex w-full items-center gap-2 rounded-xl border border-dashed border-black/13 px-4 py-3 text-[12px] font-medium text-[#6d6b63] transition hover:border-[#2f5d50]/40 hover:bg-white hover:text-[#2f5d50]"
+                >
+                  <span className="size-4">
+                    <PlusIcon />
+                  </span>
+                  New checklist
+                </button>
+              )}
+            </Show>
           </aside>
 
           <main className="px-5 py-9 sm:px-8 lg:px-[clamp(3rem,8vw,8.5rem)] lg:py-16">
-            {selectedList && (
-              <div className="mx-auto max-w-190">
-                <div className="mb-8 flex items-end justify-between gap-6">
-                  <div>
-                    <p className="mb-2 text-[11px] font-semibold tracking-[0.13em] text-[#a26845] uppercase">
-                      Current checklist
-                    </p>
-                    <h1 className="text-[clamp(2rem,4vw,3.4rem)] leading-[1.05] font-semibold tracking-[-0.045em]">
-                      {selectedList.name}
-                    </h1>
-                  </div>
-                  <div className="flex shrink-0 items-center gap-4">
-                    <div className="hidden text-right sm:block">
-                      <p className="text-2xl font-semibold tracking-[-0.04em]">
-                        {checkedCount}
-                        <span className="text-[#aaa79e]">
-                          /{selectedList.items.length}
-                        </span>
+            <Show when="signed-in">
+              {selectedList && (
+                <div className="mx-auto max-w-190">
+                  <div className="mb-8 flex items-end justify-between gap-6">
+                    <div>
+                      <p className="mb-2 text-[11px] font-semibold tracking-[0.13em] text-[#a26845] uppercase">
+                        Current checklist
                       </p>
-                      <p className="text-[11px] text-[#8e8b82]">checked</p>
+                      <h1 className="text-[clamp(2rem,4vw,3.4rem)] leading-[1.05] font-semibold tracking-[-0.045em]">
+                        {selectedList.name}
+                      </h1>
                     </div>
-                    <button
-                      type="button"
-                      onClick={deleteList}
-                      title="Delete checklist"
-                      aria-label={`Delete ${selectedList.name}`}
-                      className="flex size-9 items-center justify-center rounded-lg border border-[#a94f3d]/15 text-[#a94f3d] transition hover:border-[#a94f3d]/25 hover:bg-[#a94f3d]/6"
-                    >
-                      <span className="size-4.25 [&_path]:fill-none [&_path]:stroke-current [&_path]:stroke-[1.5] [&_path]:[stroke-linecap:round] [&_path]:[stroke-linejoin:round]">
-                        <TrashIcon />
-                      </span>
-                    </button>
-                  </div>
-                </div>
-
-                <div className="mb-5 h-1.5 overflow-hidden rounded-full bg-black/5.5">
-                  <div
-                    className="h-full rounded-full bg-[#d28a58] transition-[width] duration-500"
-                    style={{
-                      width: `${
-                        selectedList.items.length
-                          ? (checkedCount / selectedList.items.length) * 100
-                          : 0
-                      }%`,
-                    }}
-                  />
-                </div>
-
-                <div className="mb-3 flex flex-wrap items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={uncheckAll}
-                    disabled={checkedCount === 0}
-                    className="rounded-lg border border-black/8 bg-white px-3 py-1.5 text-[11px] font-medium text-[#68665f] transition hover:border-black/[0.14] hover:text-[#2f5d50] disabled:cursor-not-allowed disabled:opacity-40"
-                  >
-                    Uncheck all
-                  </button>
-                  <button
-                    type="button"
-                    onClick={deleteCheckedItems}
-                    disabled={checkedCount === 0}
-                    className="rounded-lg border border-black/8 bg-white px-3 py-1.5 text-[11px] font-medium text-[#68665f] transition hover:border-[#a94f3d]/20 hover:text-[#a94f3d] disabled:cursor-not-allowed disabled:opacity-40"
-                  >
-                    Delete checked
-                  </button>
-                  <button
-                    type="button"
-                    onClick={deleteAllItems}
-                    disabled={selectedList.items.length === 0}
-                    className="rounded-lg border border-black/8 bg-white px-3 py-1.5 text-[11px] font-medium text-[#68665f] transition hover:border-[#a94f3d]/20 hover:text-[#a94f3d] disabled:cursor-not-allowed disabled:opacity-40"
-                  >
-                    Delete all
-                  </button>
-                </div>
-
-                <div className="divide-y divide-black/6.5 border-y border-black/6.5">
-                  {selectedList.items.map((item) => (
-                    <div
-                      key={item._id}
-                      className="group flex items-center gap-4 py-4.5"
-                    >
-                      <label className="flex min-w-0 flex-1 cursor-pointer items-center gap-4">
-                        <input
-                          type="checkbox"
-                          checked={item.checked}
-                          onChange={() => toggleItem(item._id)}
-                          className="peer sr-only"
-                        />
-                        <span className="flex size-5.5 shrink-0 items-center justify-center rounded-[7px] border border-black/20 text-transparent transition group-hover:border-[#2f5d50]/60 peer-checked:border-[#2f5d50] peer-checked:bg-[#2f5d50] peer-checked:text-white">
-                          <span className="size-3.5 [&_path]:fill-none [&_path]:stroke-current [&_path]:stroke-2 [&_path]:[stroke-linecap:round] [&_path]:[stroke-linejoin:round]">
-                            <CheckIcon />
+                    <div className="flex shrink-0 items-center gap-4">
+                      <div className="hidden text-right sm:block">
+                        <p className="text-2xl font-semibold tracking-[-0.04em]">
+                          {checkedCount}
+                          <span className="text-[#aaa79e]">
+                            /{selectedList.items.length}
                           </span>
-                        </span>
-                        <span
-                          className={`min-w-0 flex-1 truncate text-[15px] tracking-[-0.01em] transition ${
-                            item.checked
-                              ? "text-[#aaa79e] line-through decoration-[#aaa79e]"
-                              : "text-[#34332f]"
-                          }`}
-                        >
-                          {item.text}
-                        </span>
-                      </label>
+                        </p>
+                        <p className="text-[11px] text-[#8e8b82]">checked</p>
+                      </div>
                       <button
                         type="button"
-                        onClick={() => deleteItem(item._id)}
-                        aria-label={`Delete ${item.label}`}
-                        title="Delete item"
-                        className="flex size-8 shrink-0 items-center justify-center rounded-lg text-[#aaa79e] opacity-100 transition hover:bg-[#a94f3d]/6 hover:text-[#a94f3d] sm:opacity-0 sm:group-hover:opacity-100 sm:focus:opacity-100"
+                        onClick={deleteList}
+                        title="Delete checklist"
+                        aria-label={`Delete ${selectedList.name}`}
+                        className="flex size-9 items-center justify-center rounded-lg border border-[#a94f3d]/15 text-[#a94f3d] transition hover:border-[#a94f3d]/25 hover:bg-[#a94f3d]/6"
                       >
-                        <span className="size-4 [&_path]:fill-none [&_path]:stroke-current [&_path]:stroke-[1.5] [&_path]:[stroke-linecap:round] [&_path]:[stroke-linejoin:round]">
+                        <span className="size-4.25 [&_path]:fill-none [&_path]:stroke-current [&_path]:stroke-[1.5] [&_path]:[stroke-linecap:round] [&_path]:[stroke-linejoin:round]">
                           <TrashIcon />
                         </span>
                       </button>
                     </div>
-                  ))}
-                  {selectedList.items.length === 0 && (
-                    <div className="py-12 text-center">
-                      <p className="text-[14px] font-medium text-[#646159]">
-                        A fresh start.
-                      </p>
-                      <p className="mt-1 text-[12px] text-[#99968d]">
-                        Add the first item to this checklist below.
-                      </p>
-                    </div>
-                  )}
-                </div>
+                  </div>
 
-                <form onSubmit={addItem} className="mt-6 flex gap-3">
-                  <div className="flex min-w-0 flex-1 items-center gap-3 rounded-xl border border-black/9 bg-white px-4 shadow-[0_5px_20px_rgba(50,48,40,0.035)] focus-within:border-[#2f5d50]/40 focus-within:ring-3 focus-within:ring-[#2f5d50]/6">
-                    <span className="size-4.25 shrink-0 text-[#aaa79e]">
-                      <PlusIcon />
-                    </span>
-                    <input
-                      value={newItem}
-                      onChange={(event) => setNewItem(event.target.value)}
-                      placeholder="Add a new item..."
-                      aria-label="New checklist item"
-                      className="h-12 w-full bg-transparent text-[14px] outline-none placeholder:text-[#aaa79e]"
+                  <div className="mb-5 h-1.5 overflow-hidden rounded-full bg-black/5.5">
+                    <div
+                      className="h-full rounded-full bg-[#d28a58] transition-[width] duration-500"
+                      style={{
+                        width: `${
+                          selectedList.items.length
+                            ? (checkedCount / selectedList.items.length) * 100
+                            : 0
+                        }%`,
+                      }}
                     />
                   </div>
-                  <button
-                    type="submit"
-                    className="rounded-xl bg-[#24231f] px-5 text-[13px] font-semibold text-white shadow-sm transition hover:bg-[#38362f] active:scale-[0.98]"
-                  >
-                    Add item
-                  </button>
-                </form>
 
-                <p className="mt-4 text-[11px] text-[#9a978e]">
-                  Press Enter to quickly add an item
-                </p>
-              </div>
-            )}
-            {!selectedList && (
-              <div className="mx-auto flex max-w-130 flex-col items-center py-20 text-center">
-                <div className="mb-5 flex size-12 items-center justify-center rounded-2xl bg-[#dfeae3] text-[#2f5d50]">
-                  <span className="size-5">
-                    <ListIcon />
-                  </span>
+                  <div className="mb-3 flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={uncheckAll}
+                      disabled={checkedCount === 0}
+                      className="rounded-lg border border-black/8 bg-white px-3 py-1.5 text-[11px] font-medium text-[#68665f] transition hover:border-black/[0.14] hover:text-[#2f5d50] disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                      Uncheck all
+                    </button>
+                    <button
+                      type="button"
+                      onClick={deleteCheckedItems}
+                      disabled={checkedCount === 0}
+                      className="rounded-lg border border-black/8 bg-white px-3 py-1.5 text-[11px] font-medium text-[#68665f] transition hover:border-[#a94f3d]/20 hover:text-[#a94f3d] disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                      Delete checked
+                    </button>
+                    <button
+                      type="button"
+                      onClick={deleteAllItems}
+                      disabled={selectedList.items.length === 0}
+                      className="rounded-lg border border-black/8 bg-white px-3 py-1.5 text-[11px] font-medium text-[#68665f] transition hover:border-[#a94f3d]/20 hover:text-[#a94f3d] disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                      Delete all
+                    </button>
+                  </div>
+
+                  <div className="divide-y divide-black/6.5 border-y border-black/6.5">
+                    {selectedList.items.map((item) => (
+                      <div
+                        key={item._id}
+                        className="group flex items-center gap-4 py-4.5"
+                      >
+                        <label className="flex min-w-0 flex-1 cursor-pointer items-center gap-4">
+                          <input
+                            type="checkbox"
+                            checked={item.checked}
+                            onChange={() => toggleItem(item._id)}
+                            className="peer sr-only"
+                          />
+                          <span className="flex size-5.5 shrink-0 items-center justify-center rounded-[7px] border border-black/20 text-transparent transition group-hover:border-[#2f5d50]/60 peer-checked:border-[#2f5d50] peer-checked:bg-[#2f5d50] peer-checked:text-white">
+                            <span className="size-3.5 [&_path]:fill-none [&_path]:stroke-current [&_path]:stroke-2 [&_path]:[stroke-linecap:round] [&_path]:[stroke-linejoin:round]">
+                              <CheckIcon />
+                            </span>
+                          </span>
+                          <span
+                            className={`min-w-0 flex-1 truncate text-[15px] tracking-[-0.01em] transition ${
+                              item.checked
+                                ? "text-[#aaa79e] line-through decoration-[#aaa79e]"
+                                : "text-[#34332f]"
+                            }`}
+                          >
+                            {item.text}
+                          </span>
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => deleteItem(item._id)}
+                          aria-label={`Delete ${item.label}`}
+                          title="Delete item"
+                          className="flex size-8 shrink-0 items-center justify-center rounded-lg text-[#aaa79e] opacity-100 transition hover:bg-[#a94f3d]/6 hover:text-[#a94f3d] sm:opacity-0 sm:group-hover:opacity-100 sm:focus:opacity-100"
+                        >
+                          <span className="size-4 [&_path]:fill-none [&_path]:stroke-current [&_path]:stroke-[1.5] [&_path]:[stroke-linecap:round] [&_path]:[stroke-linejoin:round]">
+                            <TrashIcon />
+                          </span>
+                        </button>
+                      </div>
+                    ))}
+                    {selectedList.items.length === 0 && (
+                      <div className="py-12 text-center">
+                        <p className="text-[14px] font-medium text-[#646159]">
+                          A fresh start.
+                        </p>
+                        <p className="mt-1 text-[12px] text-[#99968d]">
+                          Add the first item to this checklist below.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  <form onSubmit={addItem} className="mt-6 flex gap-3">
+                    <div className="flex min-w-0 flex-1 items-center gap-3 rounded-xl border border-black/9 bg-white px-4 shadow-[0_5px_20px_rgba(50,48,40,0.035)] focus-within:border-[#2f5d50]/40 focus-within:ring-3 focus-within:ring-[#2f5d50]/6">
+                      <span className="size-4.25 shrink-0 text-[#aaa79e]">
+                        <PlusIcon />
+                      </span>
+                      <input
+                        value={newItem}
+                        onChange={(event) => setNewItem(event.target.value)}
+                        placeholder="Add a new item..."
+                        aria-label="New checklist item"
+                        className="h-12 w-full bg-transparent text-[14px] outline-none placeholder:text-[#aaa79e]"
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      className="rounded-xl bg-[#24231f] px-5 text-[13px] font-semibold text-white shadow-sm transition hover:bg-[#38362f] active:scale-[0.98]"
+                    >
+                      Add item
+                    </button>
+                  </form>
+
+                  <p className="mt-4 text-[11px] text-[#9a978e]">
+                    Press Enter to quickly add an item
+                  </p>
                 </div>
-                <h1 className="text-2xl font-semibold tracking-[-0.03em]">
-                  No checklists yet
-                </h1>
+              )}
+              {!selectedList && (
+                <div className="mx-auto flex max-w-130 flex-col items-center py-20 text-center">
+                  <div className="mb-5 flex size-12 items-center justify-center rounded-2xl bg-[#dfeae3] text-[#2f5d50]">
+                    <span className="size-5">
+                      <ListIcon />
+                    </span>
+                  </div>
+                  <h1 className="text-2xl font-semibold tracking-[-0.03em]">
+                    No checklists yet
+                  </h1>
+                  <p className="mt-2 text-[13px] text-[#8e8b82]">
+                    Create a new checklist from the sidebar to get started.
+                  </p>
+                </div>
+              )}
+            </Show>
+            <Show when="signed-out">
+              <div className="mx-auto flex max-w-130 flex-col items-center py-20 text-center">
+                <div>
+                  <SignInButton
+                    mode="modal"
+                    className="rounded-full border border-black/11 bg-[#2f5d50] text-white/90 px-4 py-2 text-[13px] font-medium shadow-sm transition hover:border-black/20 hover:bg-[#f8f7f2] hover:text-black/75 active:scale-[0.98] mr-2"
+                  />
+                  <SignUpButton
+                    mode="modal"
+                    className="rounded-full border border-black/11 bg-white px-4 py-2 text-[13px] font-medium shadow-sm transition hover:border-black/20 hover:bg-[#f8f7f2] active:scale-[0.98]"
+                  />
+                </div>
                 <p className="mt-2 text-[13px] text-[#8e8b82]">
-                  Create a new checklist from the sidebar to get started.
+                  Please Sign in or Register to get started.
                 </p>
               </div>
-            )}
+            </Show>
           </main>
         </div>
       </div>
